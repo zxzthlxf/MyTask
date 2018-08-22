@@ -23,5 +23,42 @@
 	</target>
 </project>-->
 <project name="FirstTask" basedir="." default="use">
-	
-</project>
+	<property name="src.dir" value="src" />
+	<property name="classes.dir" value="classes" />
+	<target name="clean" description="Delete all generated files">
+		<delete dir="${classes.dir}" failonerror="false" />
+		<delete file="${ant.project.name}.jar" />
+	</target>
+	<target name="compile" description="Compile the Task">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="failse" />
+	</target>
+	<target name="jar" description="JARs the Task" depends="compile">
+		<jar destfile="${ant.project.name}.jar" basedir="${classes.dir}" />
+	</target>
+	<target name="use.init" description="Taskdef the HelloWorld-Task" depends="jar">
+		<taskdef name="helloworld" classname="FirstTask" classpath="${ant.project.name}.jar" />
+	</target>
+	<target name="use.without" description="Use without any" depends="use.init">
+		<helloworld/>
+	</target>
+	<target name="use.message" description="Use with attribute 'message'" depends="use.init">
+		<helloworld message="attribute-text" />
+	</target>
+	<target name="use.fail" description="Use with attribute 'fail'" depends="use.init">
+		<helloworld fail="true" />
+	</target>
+	<target name="use.nestedText" description="Use with nested text" depends="use.init">
+		<helloworld>nested-text</helloworld>
+	</target>
+	<target name="use.nestedElement" description="Use with nested 'message'" depends="use.init">
+		<helloworld>
+			<message msg="Nested Element 1" />
+			<message msg="Nested Element 2" />
+		</helloworld>
+	</target>
+	<target name="use" description="Try all(w/out use.fail)" depends="use.without,use.message,use.nestedText,use.nestedElement" />
+
+
+
+</project>	                                                 
